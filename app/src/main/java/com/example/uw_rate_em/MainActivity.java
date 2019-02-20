@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
+        if (user != null){
+            finish();
+            Intent intent = new Intent(MainActivity.this, Home_Screen.class);
+            startActivity(intent);
+        }
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 String username = usernameText.getText().toString().trim();
                 String password = passwordText.getText().toString().trim();
 
-                if (!checkCredential()){
+                if (!validateInput()){
                     return;
                 }
 
@@ -80,20 +88,19 @@ public class MainActivity extends AppCompatActivity {
                 String username = usernameText.getText().toString().trim();
                 String password = passwordText.getText().toString().trim();
 
-                if (!checkCredential()){
+                if (!validateInput()){
                     return;
                 }
-
-                firebaseAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Registration Successfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Login Successfull", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, Home_Screen.class);
                             startActivity(intent);
                         }
                         else {
-                            Toast.makeText(MainActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "login Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    private boolean checkCredential() {
+    private boolean validateInput() {
         String username = usernameText.getText().toString().trim();
         String password = passwordText.getText().toString().trim();
         if ((username.isEmpty()) || (password.isEmpty())) {

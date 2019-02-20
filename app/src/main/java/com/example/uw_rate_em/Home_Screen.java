@@ -29,16 +29,6 @@ public class Home_Screen extends AppCompatActivity {
         Button searchCourse, addCourse;
 
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         courseSearchText = (EditText) findViewById(R.id.courseSearchText);
         searchCourse = (Button)findViewById(R.id.searchCourse);
         addCourse = (Button)findViewById(R.id.addCourse);
