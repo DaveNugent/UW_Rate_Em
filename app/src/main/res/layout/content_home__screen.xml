@@ -12,17 +12,38 @@
         android:id="@+id/courseSearchText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="98dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="100dp"
         android:ems="10"
         android:hint="Search Course"
         android:inputType="text"
-        tools:layout_editor_absoluteX="98dp"
-        tools:layout_editor_absoluteY="85dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/courseList"
-        android:layout_width="395dp"
-        android:layout_height="529dp"
-        android:scrollbars="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="138dp" />
+    <Button
+        android:id="@+id/searchCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="209dp"
+        android:layout_marginEnd="162dp"
+        android:text="Search Course"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/addCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="332dp"
+        android:layout_marginEnd="162dp"
+        android:text="Add Course"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
