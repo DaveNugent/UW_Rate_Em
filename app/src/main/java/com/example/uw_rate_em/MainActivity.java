@@ -13,9 +13,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,18 +26,20 @@ public class MainActivity extends AppCompatActivity {
     private Button loginBtn, createAccBtn, guestBtn;
     boolean guest;
     private FirebaseAuth firebaseAuth;
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseApp.initializeApp(this);
+
         passwordText = (EditText) findViewById(R.id.passwordText);
         usernameText = (EditText) findViewById(R.id.usernameText);
         loginBtn = (Button)findViewById(R.id.loginBtn);
         createAccBtn = (Button)findViewById(R.id.createAccBtn);
         guestBtn = (Button)findViewById(R.id.guestBtn);
-
         firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -59,16 +64,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                firebaseAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Registration Successfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Login Successfull", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, Home_Screen.class);
                             startActivity(intent);
                         }
                         else {
-                            Toast.makeText(MainActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -91,16 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 if (!validateInput()){
                     return;
                 }
-                firebaseAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                firebaseAuth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "Login Successfull", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, Home_Screen.class);
                             startActivity(intent);
                         }
                         else {
-                            Toast.makeText(MainActivity.this, "login Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 guest = true;
                 // go to next activity
+                firebaseAuth.signInAnonymously();
                 Intent intent = new Intent(MainActivity.this, Home_Screen.class);
                 startActivity(intent);
             }
@@ -127,6 +132,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
 }

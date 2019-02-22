@@ -9,6 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.*;
 
@@ -16,7 +22,10 @@ import java.util.*;
 
 public class Home_Screen extends AppCompatActivity {
 
-//    static ArrayList<Course> courseList = new ArrayList<Course>();
+    EditText courseSearchText;
+    Button searchCourse, addCourse, myProfileBtn;
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mCourseRef = mRootRef.child("Course");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +34,27 @@ public class Home_Screen extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final EditText courseSearchText;
-        Button searchCourse, addCourse;
-
 
         courseSearchText = (EditText) findViewById(R.id.courseSearchText);
         searchCourse = (Button)findViewById(R.id.searchCourse);
         addCourse = (Button)findViewById(R.id.addCourse);
+        myProfileBtn = (Button)findViewById(R.id.myProfileBtn);
 
 
 
         searchCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Course course = Course.searchCourse(courseSearchText.getText().toString().trim());
+            if (!validateInput()){
+                return;
+            }
+            ;
+            //TODO search database for course
+                //Course course = Course.searchCourse(courseSearchText.getText().toString().trim());
+                Course course = new Course(courseSearchText.getText().toString().trim());
+                course.setGpa(4.0);
+                mCourseRef.child("Name").setValue(course.getName());
+                mCourseRef.child("gpa").setValue(Double.toString(course.getGpa()));
                 if ( course != null){
                     Intent intent = new Intent(Home_Screen.this, coursePage.class);
                     intent.putExtra("course", course);
@@ -55,8 +71,13 @@ public class Home_Screen extends AppCompatActivity {
         addCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!validateInput()){
+                    return;
+                }
+                //TODO search database for course
+//                Course course = new Course(courseSearchText.getText().toString().trim());
                 Course course = new Course(courseSearchText.getText().toString().trim());
-                if (Course.addCourse(course)){
+                if (true){ //FIXME search database add database
                     // course added
                     Intent intent = new Intent(Home_Screen.this, coursePage.class);
                     intent.putExtra("course", course);
@@ -68,6 +89,23 @@ public class Home_Screen extends AppCompatActivity {
                 }
             }
         });
+
+        myProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Home_Screen.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private boolean validateInput() {
+        String courseText = courseSearchText.getText().toString().trim();
+        if ((courseText.isEmpty())) {
+            Toast.makeText(Home_Screen.this, "Please fill course field", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 }

@@ -5,53 +5,37 @@ import java.util.ArrayList;
 
 public class Course implements Serializable {
     //course constructor
-    String Name;
-    double gpa;
-    int ratings;
-    static ArrayList<Course> courseList = new ArrayList<Course>();
+    public String Name;
+    public double gpa;
+    public int ratings;
 
-    public Course (String Name_in)
-    {
-        Name = Name_in;
+    public Course(String name) {
+        Name = name;
         gpa = 0;
         ratings = 0;
     }
-    public String getName(){
-        return this.Name;
-    }
-    public double getGpa(){
-        return this.gpa;
-    }
-    public void setGpa( double gpa_in){
-        gpa = gpa_in;
-    }
-    public double addGrade(double grade_in){
-        double temp = this.ratings * this.gpa;
-        temp += grade_in;
-        this.ratings++;
-        this.gpa = (temp / this.ratings);
-        return this.gpa;
-    }
-    // add a course to the courseList
-    // returns whether class was added
-    static public boolean addCourse(Course course){
-        if ((searchCourse(course.getName()) != null )){
-            return false;
-        }
-        courseList.add(course);
-        return true;
+
+    public String getName() {
+        return Name;
     }
 
-    // search for a course from the courseList
-    // returns whether class was found
-    static public Course searchCourse( String courseName){
-        for(Course d : courseList){
-            if(d.Name != null && d.Name.equals(courseName)) {
-                return d;
-            }
-        }
-        return null;
+    public void setName(String name) {
+        Name = name;
     }
 
+    public double getGpa() {
+        return gpa;
+    }
 
+    public void setGpa(double gpa) {
+        this.gpa = gpa;
+    }
+
+    public int getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(int ratings) {
+        this.ratings = ratings;
+    }
 }
