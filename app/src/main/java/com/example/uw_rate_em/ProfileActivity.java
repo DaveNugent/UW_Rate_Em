@@ -22,6 +22,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         logout = (Button) findViewById(R.id.logoutBtn);
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -30,5 +37,6 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity((new Intent(ProfileActivity.this, MainActivity.class)));
             }
         });
+        //TODO add course display based on uid
     }
 }

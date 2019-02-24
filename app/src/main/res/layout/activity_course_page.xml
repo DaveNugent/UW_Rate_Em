@@ -37,9 +37,9 @@
         android:id="@+id/addRatingBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
+        android:layout_marginStart="201dp"
         android:layout_marginTop="341dp"
-        android:layout_marginEnd="143dp"
+        android:layout_marginEnd="104dp"
         android:text="Add Rating"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,4 +58,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/ratingText"
+        android:layout_width="123dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="342dp"
+        android:layout_marginEnd="209dp"
+        android:ems="10"
+        android:hint="Rating"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.uw_rate_em;
 
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,10 +24,18 @@ import static java.lang.String.valueOf;
 public class coursePage extends AppCompatActivity {
 
     private TextView gradeText, courseNameText;
+    private  EditText ratingText;
     private Button addCourseSchedule, addRatingBtn;
 
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mCourseRef = mRootRef.child("Course");
+    DatabaseReference mUsersRef = mRootRef.child("Users");
+    DatabaseReference mCourseRef = mRootRef.child("Courses");
+    DecimalFormat df = new DecimalFormat("#.##");
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser() ;
+
+    Course course;
+
+
 
 
     @Override
@@ -37,31 +47,28 @@ public class coursePage extends AppCompatActivity {
 
         gradeText = (TextView) findViewById(R.id.gradeText);
         courseNameText = (TextView) findViewById(R.id.courseNameText);
-        addCourseSchedule = (Button)findViewById(R.id.addRatingBtn);
+        addCourseSchedule = (Button)findViewById(R.id.addCourseSchedule);
         addRatingBtn = (Button) findViewById(R.id.addRatingBtn);
+        ratingText = (EditText) findViewById(R.id.ratingText);
 
         Intent intent = getIntent();
-        final Course course = (Course) intent.getSerializableExtra("course");
+        course = (Course) intent.getSerializableExtra("course");
 
         gradeText.setText(valueOf(course.getGpa()));
         courseNameText.setText(course.getName());
-
-        addRatingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //do something
-            }
-        });
 
     }
     @Override
     public void onStart() {
         super.onStart();
 
-        mCourseRef.child("gpa").addValueEventListener(new ValueEventListener() {
+
+        mCourseRef.child(course.getName()).child("Gpa").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String temp = dataSnapshot.getValue(String.class);
+                course.setGpa(Double.valueOf(temp));
+                temp = (String)df.format(course.getGpa());
                 gradeText.setText(temp);
             }
 
@@ -70,20 +77,58 @@ public class coursePage extends AppCompatActivity {
 
             }
         });
+
+        mCourseRef.child(course.getName()).child("Ratings").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String temp = dataSnapshot.getValue(String.class);
+                if (temp != null){
+                    course.setRatings(Integer.parseInt(temp));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         addCourseSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCourseRef.child("ratings").setValue("1");
-                //addCourse(course);
+                mUsersRef.child(currentUser.getUid()).child(course.getName()).setValue(course.getName());
+                Toast.makeText(coursePage.this, "Course added", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        addRatingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validateInput()) {
+                    double userRating = Double.valueOf(ratingText.getText().toString());
+                    if ((userRating > 4.0) || (userRating < 0.0)) {
+                        Toast.makeText(coursePage.this, "Please enter a value from 0.0 - 4.0", Toast.LENGTH_SHORT).show();
+                    } else {
+                        double currTotal = course.getGpa() * course.getRatings();
+                        course.setRatings((course.getRatings() + 1));
+                        course.setGpa((currTotal + userRating) / course.getRatings());
+                        mCourseRef.child(course.getName()).child("Gpa").setValue(String.valueOf(course.getGpa()));
+                        mCourseRef.child(course.getName()).child("Ratings").setValue(String.valueOf(course.getRatings()));
+                        Toast.makeText(coursePage.this, "Rating added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
         });
 
     }
-    private void addCourse(Course course){
-        //Course course1 = new Course("testCourse");
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = firebaseDatabase.getReference(firebaseAuth.getUid());
-//        myRef.setValue(course);
 
+    private boolean validateInput() {
+        String courseText = ratingText.getText().toString().trim();
+        if ((courseText.isEmpty())) {
+            Toast.makeText(coursePage.this, "Please fill ratings field", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 }

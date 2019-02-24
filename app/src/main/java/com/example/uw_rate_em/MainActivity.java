@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private Button loginBtn, createAccBtn, guestBtn;
     boolean guest;
     private FirebaseAuth firebaseAuth;
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     private boolean validateInput() {
         String username = usernameText.getText().toString().trim();
         String password = passwordText.getText().toString().trim();
@@ -132,4 +132,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
 }

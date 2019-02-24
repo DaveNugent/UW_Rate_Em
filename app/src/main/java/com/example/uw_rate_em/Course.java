@@ -3,6 +3,7 @@ package com.example.uw_rate_em;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+
 public class Course implements Serializable {
     //course constructor
     public String Name;
@@ -38,4 +39,5 @@ public class Course implements Serializable {
     public void setRatings(int ratings) {
         this.ratings = ratings;
     }
+
 }
