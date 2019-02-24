@@ -12,9 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseError;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,19 +43,18 @@ public class Home_Screen extends AppCompatActivity {
         searchCourse = (Button)findViewById(R.id.searchCourse);
         addCourse = (Button)findViewById(R.id.addCourse);
         myProfileBtn = (Button)findViewById(R.id.myProfileBtn);
+        setTitle("Course Search");
 
 
 
         searchCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // check to make sure all relevant fields are populated
             if (!validateInput()){
                 return;
             }
-            ;
-            //TODO search database for course
-                //Course course = Course.searchCourse(courseSearchText.getText().toString().trim());
-
+                // search the arraylist for courses, if found, pass the course object to the coursepage and go there
                 if ( searchCourse()){
                     Course course = new Course(courseSearchText.getText().toString().trim());
                     Intent intent = new Intent(Home_Screen.this, coursePage.class);
@@ -73,6 +69,7 @@ public class Home_Screen extends AppCompatActivity {
             }
         });
 
+        // add course to database under Root/Courses/course name
         addCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,8 +77,8 @@ public class Home_Screen extends AppCompatActivity {
                     return;
                 }
 
-
-                if (!searchCourse()){ //FIXME search database add database
+                // if the course is not in the database
+                if (!searchCourse()){
                     // creating new course object
                     Course course = new Course(courseSearchText.getText().toString().trim());
                     // creating reference to new course title in firebase.
@@ -105,12 +102,14 @@ public class Home_Screen extends AppCompatActivity {
                     intent.putExtra("course", course);
                     startActivity(intent);
                 }
+                // if course is already in database
                 else{
                     Toast.makeText(Home_Screen.this, "Course already exists", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        // go to my profile activity
         myProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +123,7 @@ public class Home_Screen extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // transfer Courses from firebase to local arraylist
         mCourseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -143,6 +143,7 @@ public class Home_Screen extends AppCompatActivity {
         });
     }
 
+    // make sure course search input is populated
     private boolean validateInput() {
         String courseText = courseSearchText.getText().toString().trim();
         if ((courseText.isEmpty())) {
@@ -152,6 +153,7 @@ public class Home_Screen extends AppCompatActivity {
         return true;
     }
 
+    // check if course exists in arraylist
     private Boolean searchCourse(){
         if (courseNameArrayList.contains(courseSearchText.getText().toString().trim().toUpperCase())) {
             return true;

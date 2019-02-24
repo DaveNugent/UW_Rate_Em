@@ -53,6 +53,8 @@ public class coursePage extends AppCompatActivity {
 
         Intent intent = getIntent();
         course = (Course) intent.getSerializableExtra("course");
+        // setting title to courses name
+        setTitle(course.getName());
 
         gradeText.setText(valueOf(course.getGpa()));
         courseNameText.setText(course.getName());
@@ -67,8 +69,11 @@ public class coursePage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String temp = dataSnapshot.getValue(String.class);
+                // setting course object gpa to databases course gpa
                 course.setGpa(Double.valueOf(temp));
+                // rounding to second decimal point
                 temp = (String)df.format(course.getGpa());
+                // setting gpa to temp
                 gradeText.setText(temp);
             }
 
@@ -81,6 +86,7 @@ public class coursePage extends AppCompatActivity {
         mCourseRef.child(course.getName()).child("Ratings").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // setting course objects ratings to databases ratings
                 String temp = dataSnapshot.getValue(String.class);
                 if (temp != null){
                     course.setRatings(Integer.parseInt(temp));
@@ -96,24 +102,33 @@ public class coursePage extends AppCompatActivity {
         addCourseSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // add course to database under Root/Courses/current user uid
                 mUsersRef.child(currentUser.getUid()).child(course.getName()).setValue(course.getName());
                 Toast.makeText(coursePage.this, "Course added", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // updating course object and firebase course overall rating
         addRatingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // checking input is not null
                 if (validateInput()) {
                     double userRating = Double.valueOf(ratingText.getText().toString());
+                    // checking input is within range
                     if ((userRating > 4.0) || (userRating < 0.0)) {
                         Toast.makeText(coursePage.this, "Please enter a value from 0.0 - 4.0", Toast.LENGTH_SHORT).show();
                     } else {
+                        // multiplying the average by its weight (ratings)
                         double currTotal = course.getGpa() * course.getRatings();
+                        // incrementing the course objects rating
                         course.setRatings((course.getRatings() + 1));
+                        // finding the new average with the added value
                         course.setGpa((currTotal + userRating) / course.getRatings());
+                        // setting databases ratings and gpa feilds
                         mCourseRef.child(course.getName()).child("Gpa").setValue(String.valueOf(course.getGpa()));
                         mCourseRef.child(course.getName()).child("Ratings").setValue(String.valueOf(course.getRatings()));
+                        // giving user feedback
                         Toast.makeText(coursePage.this, "Rating added", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -123,6 +138,7 @@ public class coursePage extends AppCompatActivity {
 
     }
 
+    // check to make sure user input is not null
     private boolean validateInput() {
         String courseText = ratingText.getText().toString().trim();
         if ((courseText.isEmpty())) {

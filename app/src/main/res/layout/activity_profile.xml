@@ -7,18 +7,40 @@
     tools:context=".ProfileActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/Courses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="176dp"
-        tools:layout_editor_absoluteY="102dp" />
+        android:text="Current Courses"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/courseRecyclerText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.763" />
 
     <Button
         android:id="@+id/logoutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
-        tools:layout_editor_absoluteX="161dp"
-        tools:layout_editor_absoluteY="523dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/courseRecyclerText"
+        app:layout_constraintVertical_bias="0.446" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/courseRecyclerText"
+        android:layout_width="395dp"
+        android:layout_height="356dp"
+        android:layout_marginTop="159dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="0"
+        tools:listitem="@layout/layoutlistitem" />
 </android.support.constraint.ConstraintLayout>
